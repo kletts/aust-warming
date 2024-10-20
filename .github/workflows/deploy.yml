@@ -23,7 +23,7 @@ jobs:
           python-version: '3.11'
       - name: build environment
         run: |
-          python -m pip install cdsapi datetime netCDF4 pandas dotenv
+          python -m pip install cdsapi datetime netCDF4 pandas python-dotenv
       - uses: actions/setup-node@v4
         with:
           node-version: 20
