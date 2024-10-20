@@ -5,8 +5,8 @@ title: Monthly weather
 # Monthly temperature anomaly
 
 ```js 
-const obsdata = FileAttachment("data/au-current-obs.csv").csv({ typed: true })
-const maxdate = new Date("2024-09-01");
+const obsdata = FileAttachment("data/au-current-obs.csv").csv({ typed: true });
+const maxdate = d3.max(obsdata, d => d.Date);
 ```
 
 ```js 

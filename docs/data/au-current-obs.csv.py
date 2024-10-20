@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-ct = datetime.datetime.now() + datetime.timedelta(days=-30)
+ct = datetime.date.today() + datetime.timedelta(days=-30)
 
 dataset = "reanalysis-era5-land-monthly-means"
 
@@ -56,6 +56,7 @@ for i in range(grid.shape[0]):
     k = np.abs(lat - grid['lat'].iloc[i]).argmin() 
     x[i] = data[0,k,j].data -273.15 
 
+grid['Date'] = ct
 grid['ObsTemp'] =  x
 grid['Anomaly'] = grid['ObsTemp'] - grid['NormTemp']
 grid.to_csv(sys.stdout, index=False)
