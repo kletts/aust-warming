@@ -6,6 +6,9 @@ title: Monthly weather
 
 ```js 
 const obsdata = FileAttachment("data/au-current-obs.csv").csv({ typed: true });
+```
+
+```js 
 const maxdate = d3.max(obsdata, d => d.Date);
 ```
 

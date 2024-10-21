@@ -2,7 +2,6 @@
 # CDS data request 
 # this downloads the gridded monthly average temperature 
 # data on a bounding box covering Australia  [-9, 112, -44, 160]
-# requires the API key saved to ~/.cdsapirc 
 
 import cdsapi
 import datetime
