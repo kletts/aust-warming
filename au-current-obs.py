@@ -13,6 +13,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+print(os.getenv('CDSAPIKEY'))
 
 ct = datetime.date.today() + datetime.timedelta(days=-30)
 
