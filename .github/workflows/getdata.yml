@@ -1,0 +1,19 @@
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: "26 1 * * 2,6"
+
+jobs:
+  import-data:
+    runs-on: python:3.11-slim
+    steps:
+    - uses: actions/checkout@v3
+    - run: python -m pip install cdsapi datetime netCDF4 pandas python-dotenv requests
+    - run: python au-current-obs.py
+    - run: python global.py
+    - run: rm Globe.csv North.csv South.csv
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.TOKEN }}
+        commit_message: Push update back to repo
