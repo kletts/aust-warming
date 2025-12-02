@@ -1,0 +1,21 @@
+env:
+  CDSAPIKEY: $CDSAPIKEY
+
+before_script:
+  - apt-get update && apt-get update -y && apt-get install -y git
+  - python --version # For debugging
+  - python -m pip install cdsapi datetime netCDF4 pandas python-dotenv requests
+
+run:
+  image: python:3.11-slim
+  script:
+      - python au-current-obs.py
+      - python global.py 
+      - rm Globe.csv North.csv South.csv
+      - git config user.email "ci-bot@email.com"
+      - git config user.name "ci-bot"
+      - git remote add gitlab_origin https://austwarmingrunner:$PAT@gitlab.com/bizscisolve/aust-warming.git
+      - git add .
+      - git commit -m "push back from pipeline"
+      - git push gitlab_origin HEAD:master -o ci.skip # prevent triggering pipeline again
+
