@@ -38,5 +38,5 @@ def read_temp(region):
 
 
 data = pd.concat([read_temp("Globe"), read_temp("North"), read_temp("South")])
-pd.write_csv(data, "global-temp.csv", index=False)
+data.to_csv("global-temp.csv", index=False)
 
