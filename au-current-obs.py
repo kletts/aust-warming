@@ -13,9 +13,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-print(os.getenv('CDSAPIKEY'))
+today = datetime.date.today()
 
-ct = datetime.date.today() + datetime.timedelta(days=-30)
+if today.day < 25: 
+    ct = today + datetime.timedelta(days=-60)
+else: 
+    ct = today + datetime.timedelta(days=-30)
 
 dataset = "reanalysis-era5-land-monthly-means"
 
