@@ -1,7 +1,5 @@
 on:
   workflow_dispatch:
-  schedule:
-  - cron: "26 1 * * 2,6"
 
 jobs:
   import-data:
