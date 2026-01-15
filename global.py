@@ -1,42 +1,33 @@
-
-import requests
 import pandas as pd
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
-src = {
-    "Globe": "https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.csv",
-    "North": "https://data.giss.nasa.gov/gistemp/tabledata_v4/NH.Ts+dSST.csv",
-    "South": "https://data.giss.nasa.gov/gistemp/tabledata_v4/SH.Ts+dSST.csv"
-}
-
-# ---- Download files ----
-for region, url in src.items():
-    r = requests.get(url)
-    r.raise_for_status()
-    with open(f"{region}.csv", "wb") as f:
-        f.write(r.content)
-
-# ---- Function to read and reshape each file ----
-def read_temp(region):
-    # Skip 1 line, read first 13 columns, *** -> NaN
-    df = pd.read_csv(
-        f"{region}.csv",
-        skiprows=1,
-        usecols=range(13),
-        na_values="***"
-    )
-    # Pivot longer: columns Jan..Dec → rows
-    df = df.melt(
-        id_vars="Year",
-        var_name="Month",
-        value_name="AvTemp"
-    )
-    df["Date"] = pd.to_datetime(df["Year"].astype(str) + " " + df["Month"],
-                                format="%Y %b")
-    df["Region"] = region
-    df = df.dropna(subset=["AvTemp"])
+def read_temp(url, region):
+    # read_csv: skip 3 rows, select columns (Date, Value)
+    df = pd.read_csv(url, skiprows=3)
+    # mutate equivalent
+    df['Region'] = region
+    df = df.rename(columns={'Anomaly' : 'AvTemp'})
+    df['Date'] = pd.to_datetime(df['Date'].astype(str) + "01", format="%Y%m%d")
     return df
 
+# Define areas
+area_map = {
+    "Globe": "globe",
+    "North": "nhem",
+    "South": "shem"
+}
 
-data = pd.concat([read_temp("Globe"), read_temp("North"), read_temp("South")])
+last_month = datetime.now() - relativedelta(months=1)
+yr = last_month.strftime("%Y")
+
+# Build the dataframes (equivalent to imap_dfr)
+dfs = []
+for name, code in area_map.items():
+    url = f"https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/global/time-series/{code}/land_ocean/tavg/1/0/1850-{yr}/data.csv"
+    dfs.append(read_temp(url, name))
+
+# Combine into one dataframe
+data = pd.concat(dfs, ignore_index=True)
 data.to_csv("global-temp.csv", index=False)
 
